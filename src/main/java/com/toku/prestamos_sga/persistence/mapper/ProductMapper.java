@@ -6,6 +6,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * Indicamos es un mapeador @Mapper
  * Como Category ya tiene su propio mapper, la incluimos dentro de Mapper para que la use
  */
+@Component
 @Mapper(componentModel = "spring", uses = {CategoryMapper.class})
 public interface ProductMapper {
     @Mappings({

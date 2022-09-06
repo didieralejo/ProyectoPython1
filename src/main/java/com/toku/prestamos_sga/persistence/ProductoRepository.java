@@ -5,6 +5,7 @@ import com.toku.prestamos_sga.domain.repository.ProductRepository;
 import com.toku.prestamos_sga.persistence.crud.ProductoCrudRepository;
 import com.toku.prestamos_sga.persistence.entity.Producto;
 import com.toku.prestamos_sga.persistence.mapper.ProductMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,10 +18,20 @@ import java.util.Optional;
  */
 public class ProductoRepository implements ProductRepository{
 
-    //Objeto de la interfaz
+    /**
+     * Objeto de la interfaz
+     * ProductoCrudRepository productoCrudRepository nunca fue inicializado, por tal motivo su valor es null
+     * Al invocar cualquier método productoCrudRepository.XXXX, estaria solicitando un metodo a un objeto null y
+     * se genera el NullPointerException
+     * Vamos a ceder el control a Spring para que el gestione, cree e instancie el objeto (IoC) a traves de
+     * @Autowired
+     * Se debe asegurar que el objeto con @Autowired, tenga una notacion spring o sea un objeto spring
+     */
+    @Autowired
     private ProductoCrudRepository productoCrudRepository;
     //Variable para el mapeo
-    private ProductMapper productMapper;
+    @Autowired
+    private ProductMapper productMapper ;
 
     @Override
     //Lista de todos los productos
