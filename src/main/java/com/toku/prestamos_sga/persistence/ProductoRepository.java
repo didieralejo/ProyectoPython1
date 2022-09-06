@@ -56,7 +56,7 @@ public class ProductoRepository implements ProductRepository{
      * productMapper.toProducts(prods)
      */
     public Optional<List<Product>> getScarseProducts(int cantidadStock, boolean estado) {
-        Optional<List<Producto>> productoList = productoCrudRepository.findByCantidadStockLessThanAnAndEstado(cantidadStock, estado);
+        Optional<List<Producto>> productoList = productoCrudRepository.findByCantidadStockLessThanAndEstado(cantidadStock, estado);
         return productoList.map(prods -> productMapper.toProducts(prods));
     }
 
