@@ -2,6 +2,10 @@ package com.toku.prestamos_sga.web.controller;
 
 import com.toku.prestamos_sga.domain.Product;
 import com.toku.prestamos_sga.domain.service.ProductService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,8 @@ public class ProductController {
     //Al ejecutarlo seria /products/all
     //ResponseEntity<> recibe dos parametros en el constructor, el body y
     @GetMapping("/all")
+    @ApiOperation("Get all supermarket product")
+    @ApiResponse(code =200, message = "OK")
     public ResponseEntity<List<Product>> getAll(){
         return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
@@ -40,7 +46,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") int idProducto){
+    @ApiOperation("Get producti info by its id")
+    @ApiResponses({
+            @ApiResponse(code =200, message = "OK"),
+            @ApiResponse(code =404, message = "PROUCT NOT FOUND")
+    })
+    public ResponseEntity<Product> getProduct(@ApiParam(value ="Product Id", required = true, example = "13")
+                                                  @PathVariable("id") int idProducto){
         return productService.getProduct(idProducto)
                 .map(product -> new ResponseEntity<>(product, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
