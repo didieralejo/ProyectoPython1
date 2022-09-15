@@ -3,10 +3,11 @@ package com.toku.prestamos_sga.web.controller;
 import com.toku.prestamos_sga.domain.Product;
 import com.toku.prestamos_sga.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controlador web de api rest @RestController
@@ -22,40 +23,52 @@ public class ProductController {
     //@GetMapping Expone el servicio a la web como tipo GET (solo consulta, obtener info)
     //Recibe como parametro el path
     //Al ejecutarlo seria /products/all
+    //ResponseEntity<> recibe dos parametros en el constructor, el body y
     @GetMapping("/all")
-    public List<Product> getAll(){
-        return productService.getAll();
+    public ResponseEntity<List<Product>> getAll(){
+        return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
 
     //El path de este se coloca entre llaves la variable que recibe el metodo
     //Al metodo se le coloca @PathVariable("el mismo nombre que se coloca en getmapping")
     //Al ejecutarlo seria /products/123
     @GetMapping("/category/{id}")
-    public Optional<List<Product>> getByCategory(@PathVariable("id") int idCategoria){
-        return productService.getByCategory(idCategoria);
+    public ResponseEntity<List<Product>> getByCategory(@PathVariable("id") int idCategoria){
+        return productService.getByCategory(idCategoria)
+                .map(productsList -> new ResponseEntity<>(productsList, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> getProduct(@PathVariable("id") int idProducto){
-        return productService.getProduct(idProducto);
+    public ResponseEntity<Product> getProduct(@PathVariable("id") int idProducto){
+        return productService.getProduct(idProducto)
+                .map(product -> new ResponseEntity<>(product, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/stock/{estado}/{cant}")
-    public Optional<List<Product>> getScarseProducts(@PathVariable("cant") int cantidadStock,@PathVariable("estado") boolean estado){
-        return productService.getScarseProducts(cantidadStock, estado);
+    public ResponseEntity<List<Product>> getScarseProducts(@PathVariable("cant") int cantidadStock,@PathVariable("estado") boolean estado){
+        return productService.getScarseProducts(cantidadStock, estado)
+                .map(productsList -> new ResponseEntity<>(productsList, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     //Para guardar o modificar @PostMapping
     //La entidad producto viaja en el body @RequestBody
     @PostMapping("/save")
-    public Product save(@RequestBody Product product){
-        return productService.save(product);
+    public ResponseEntity<Product> save(@RequestBody Product product){
+        return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
     }
 
     //Para eliminar se usa @DeleteMapping
     @DeleteMapping("/del/{id}")
-    public boolean deleteByIdProducto(@PathVariable("id") int idProducto){
-        return productService.deleteByIdProducto(idProducto);
+    public ResponseEntity deleteByIdProducto(@PathVariable("id") int idProducto){
+        if(productService.deleteByIdProducto(idProducto)){
+            return new ResponseEntity(HttpStatus.OK);
+        }else{
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     public boolean delete (Product product){

@@ -32,6 +32,7 @@ public class Compra {
     @JoinColumn(name ="id_cliente", insertable = false, updatable = false)
     private Cliente cliente;
 
-    @OneToMany (mappedBy = "compra")
+    //Le indicamos que realizaremos actualizciones en cascada entre la tabla compras y la lista de productos
+    @OneToMany (mappedBy = "compra", cascade = {CascadeType.ALL})
     private List<CompraProducto> productos;
 }
